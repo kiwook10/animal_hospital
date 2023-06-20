@@ -1,0 +1,25 @@
+<style>
+    #login_space {display:flex; justify-content:center; background-image:url("/img/login_bg.png"); background-repeat:no-repeat; background-size:cover; padding:500px 0;}
+    #login_form {background-color: #f2faff;}
+    #login_form .login_text {width:200px; margin:0 auto; padding:0 100px; padding-top:100px; padding-bottom:20px;}
+    #login_form .login_text h2 {font-size:30px; text-align:center;}
+    #login_form .login_text input {width:100%; height:40px; margin:20px 0;}
+    #login_form .go {display:flex; justify-content:center; flex-direction:column; align-items:center;}
+    #login_form .go button {width:200px; background-color:#000; color:silver; margin:30px 0; cursor: pointer;}
+    #login_form .go a{margin-bottom:20px;}
+    
+</style>
+
+<div id="login_space">
+    <form id="login_form" action="/logincheck" method="post">
+        <div class="login_text">
+            <h2>LOGIN</h2>
+            <input type="text" name="memberid" placeholder="아이디를 입력해주세요">
+            <input type="password" name="memberpass" placeholder="비밀번호를 입력해주세요">
+        </div>
+        <div class="go">
+            <button type="submit">로그인</button>
+            <a href="/join">회원가입 페이지</a>
+        </div>
+    </form>
+</div>
