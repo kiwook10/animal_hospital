@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- css관련 파일 -->
     <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css">
-    <link rel="stylesheet" href="style/style.css">
+    <!-- <link rel="stylesheet" href="style/style.css"> -->
 
     <% if(css.length !== 0) {%>
         <% for(let i=0; i<css.length; i++){%>
@@ -27,7 +27,7 @@
                 <a href="/"><img src="/img/logo1.png"></a>
             </div>
             <ul class="gnb">
-                <li><a href="#">진료과목</a>
+                <li><a href="/medical_department">진료과목</a>
                     <ul class="depth2">
                         <li><a href="#">소개</a></li>
                         <li><a href="#">조직도</a></li>
@@ -70,15 +70,15 @@
                     <li><a href="/join">회원가입</a></li>
                 <% } %>
             </ul>
+            <a class="board" href="/board/list">게시판</a>
         </div>
-        <div class="gnbBg"></div> <!-- depth의 뒷배경 장식-->
         <div class="ham">
             <a href="#"><i class="fas fa-bars"></i></a>
         </div>
     </div>
     <div id="ham_menu">
         <div class="hamTop">
-            <a href="#">로그인</a>
+            <a href="/login">로그인</a>
             <i class="fas fa-times ham_close"></i>
         </div>
         <ul class="hamDepth1">

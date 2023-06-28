@@ -410,16 +410,16 @@ h1,h2,h3,h4,h5,h6 {font-size: 100%; font-weight: normal;}
 
 
   /* place area star! */
-  #place {padding: 0 0 80px;}
+
+  #place {padding:80px 0;}
   #place .center {
       width:80%; margin:0 auto;
 
   }
-  .placeTop {
-    display: flex; flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  #place .center .placeTop .placeTopWrap h2 {
+
+  #place .center .placeTop { margin-bottom:50px;}
+
+  #place .center .placeTop h2 {
     font-size: 45px; font-family: 'GmarketSansBold';
     color:#000; line-height: 50px; 
   }
@@ -428,14 +428,9 @@ h1,h2,h3,h4,h5,h6 {font-size: 100%; font-weight: normal;}
     font-size: 15px; color: #000;
     margin: 30px 0;
   }
-  #place .center .placeWrap {
-      display: flex; justify-content: space-between; align-items: center;
-  }
-  #place .center .placeWrap .placeImg {
-      width:30%; margin-right:5%;
-  }
-  #place .center .placeWrap .placeImg img {
-      width:100%;
+
+  #place .center .placeWrap .placeImg .map {
+     width:100%; height:450px; border:none;
   }
   #place .center .placeWrap a {
 

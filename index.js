@@ -23,7 +23,7 @@ app.use(passport.session());
 
 
 
-let db; //데이터베이스 연결을 위한 변수세팅(변수의 이름은 자유롭게 지어도 됨)
+let db;
 
 MongoClient.connect("mongodb+srv://kiwook10:@@aa4087aa@@@cluster0.ig6zh8w.mongodb.net/?retryWrites=true&w=majority",function(err,result){
     //에러가 발생했을경우 메세지 출력(선택사항)
@@ -84,6 +84,11 @@ app.get("/",function(req,res){
 app.get("/career",(req,res)=>{
     
     res.render("career.ejs", {login:req.user})
+})
+
+app.get("/medical_department",(req,res)=>{
+    
+    res.render("medical_department.ejs", {login:req.user})
 })
 
 //다른 서브페이지들도 로그인되어있는 회원정보 데이터 보내야함
@@ -171,6 +176,108 @@ app.post("/myupdate",(req,res)=>{
     else{
         res.send("<script>alert('기존 비밀번호랑 일치하지 않습니다'); location.href = '/mypage'; </script>")
     }
+})
+
+
+app.get("/board/list",(req,res)=>{
+   
+    db.collection("board").find().toArray((err,total)=>{
+        //게시글 전체갯수값 알아내기
+        let totalData = total.length;
+        //웹브라우저 주소창에 몇번 페이징 번호로 접속했는지 체크 page=1 / 
+        let pageNumber = (req.query.page == null) ? 1 : Number(req.query.page)
+        //게시판에 보여줄 게시글 갯수
+        let perPage = 5;
+        //블록당 보여줄 페이징번호 갯수
+        let blockCount = 5;
+        //이전,다음 블록간 이동을 하기위한 현재 페이지 블록을 구해보기
+        let blockNum = Math.ceil(pageNumber / blockCount);
+        //블록안에 페이지 번호 시작값 알아내기
+        let blockStart = ((blockNum - 1) * blockCount) + 1;
+        //블록안에 페이지 번호 끝 값 알아내기 1,2,3,4,5에서 5번
+        let blockEnd = blockStart + blockCount -1
+        
+        //게시글 전체 갯수를 토대로 페이지 번호가 몇개가 만드렁져서 표시되야하는지?
+        let totalPaging = Math.ceil(totalData / perPage);
+
+        //블록(그룹)에서 마지막 페이지번호가 끝번호보다 크다면 페이지의 끝번호를 강제로 고정
+        if(blockEnd > totalPaging){
+            blockEnd = totalPaging;  // page=10  -> 끝번호는 7로 고정 (잘못된 페이지 접근을 막으려고)
+        }
+
+        //블록(그룹)의 총 갯수값  구하기
+        let totalBlock = (totalPaging / blockCount)
+
+        //데이터베이스에서 3개씩 게시글을 뽑아서 가지고 오기위한 순서값을 정해줌
+        let startFrom = (pageNumber - 1) * perPage
+
+        //데이터베이스에서  find명령어로 꺼내오는 작업을 진행!
+        db.collection("board").find().sort({num:-1}).skip(startFrom).limit(perPage).toArray((err,result)=>{
+            res.render("brd_list.ejs",{
+
+                data:result, //find로 찾아온 게시글 데이터들 3개 보내줌
+                totalPaging:totalPaging, //페이지 번호 총 갯수값 -> 7개
+                blockStart:blockStart, //블록안에 페이지 시작 번호값
+                blockEnd:blockEnd,//블록안에 페이지 끝 번호값
+                blockNum:blockNum, //보고있는 페이지 번호가 몇번 블록(그룹)에 있는지 확인
+                totalBlock:totalBlock, //블록(그룹)의 총 갯수값 -> 2개
+                pageNumber:pageNumber, //현재 보고있는 페이지 번호값
+                login:req.user
+            })
+        })
+        
+    })
+  
+})
+
+
+//게시글 작성화면 페이지
+app.get("/board/insert",(req,res)=>{
+    res.render("brd_insert.ejs" , {login:req.user});
+})
+
+
+//게시글 데이터베이스에 저장
+                
+app.post("/dbupload",(req,res)=>{
+   
+    db.collection("count").findOne({name:"게시글 갯수"},(err,countResult)=>{
+        db.collection("board").insertOne({
+            num:countResult.prdCount,
+            title:req.body.title,
+            author:req.body.author,
+            content:req.body.content
+        },(err,result)=>{
+            db.collection("count").updateOne({name:"게시글 갯수"},{$inc:{prdCount:1}},(err,result)=>{
+                res.redirect(`/board/detail/${countResult.prdCount}`)
+            })
+        })
+    })
+})
+
+//게시글 상세화면페이지
+app.get("/board/detail/:num",(req,res)=>{
+
+    db.collection("board").findOne({num:Number(req.params.num)},(err,result)=>{
+        res.render("brd_detail.ejs",{data:result});
+    })
+})
+
+
+//게시글 수정화면 페이지 요청
+app.get("/board/update/:num",(req,res)=>{
+    db.collection("board").findOne({num:Number(req.params.num)},(err,result)=>{
+
+        res.render("brd_update.ejs",{data:result});
+    })
+})
+
+
+//게시글 데이터베이스에 수정처리
+app.post("/dbupdate",(req,res)=>{
+    db.collection("board").updateOne({num:Number(req.body.num)},{$set:{title:req.body.title,author:req.body.author,content:req.body.content}},(err,result)=>{
+        res.redirect(`/board/detail/${req.body.num}`) 
+    })
 })
 
 
